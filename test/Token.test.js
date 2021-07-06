@@ -3,7 +3,7 @@ const Token = artifacts.require('./Token');
 
 require('chai').use(require('chai-as-promised')).should();
 
-contract('Token', (accounts) => {
+contract('Token', ([deployer]) => {
 	const name = 'Copeland Token';
 	const symbol = 'Coe';
 	const decimals = '18';
@@ -30,6 +30,11 @@ contract('Token', (accounts) => {
 		});
 		it('track the total supply', async () => {
 			const result = await token.totalSupply();
+			result.toString().should.equal(totalSupply);
+		});
+
+		it('assigns the total supply to the deployer', async () => {
+			const result = await token.balanceOf(deployer);
 			result.toString().should.equal(totalSupply);
 		});
 	});

@@ -13,5 +13,6 @@ contract Token {
 
     constructor() public {
         totalSupply = 12312020 * (10**decimals);
+        balanceOf[msg.sender] = totalSupply;
     }
 }
