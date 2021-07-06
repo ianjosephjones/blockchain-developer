@@ -4,10 +4,10 @@ const Token = artifacts.require('./Token');
 require('chai').use(require('chai-as-promised')).should();
 
 contract('Token', (accounts) => {
-	const name = 'My Name';
-	const symbol = 'Symbol';
-	const decimals = 10;
-	const totalSupply = 10;
+	const name = 'Copeland Token';
+	const symbol = 'Coe';
+	const decimals = '18';
+	const totalSupply = '1000000000000000000000000';
 	let token;
 	beforeEach(async () => {
 		// Fetch token from blockchain
@@ -26,11 +26,11 @@ contract('Token', (accounts) => {
 		});
 		it('track the decimals', async () => {
 			const result = await token.decimals();
-			result.should.equal(decimals);
+			result.toString().should.equal(decimals);
 		});
 		it('track the total supply', async () => {
 			const result = await token.totalSupply();
-			result.should.equal(totalSupply);
+			result.toString().should.equal(totalSupply);
 		});
 	});
 });
