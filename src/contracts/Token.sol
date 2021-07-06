@@ -1,7 +1,8 @@
 pragma solidity >=0.5.0;
-
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract Token {
+    using SafeMath for uint;
     string public name = "Copeland Token";
     string public symbol = "Coe";
     uint256 public decimals = 18;
