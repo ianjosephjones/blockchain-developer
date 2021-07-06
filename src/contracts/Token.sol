@@ -12,6 +12,6 @@ contract Token {
     // Send Tokens
 
     constructor() public {
-        totalSupply = 1000000 * (10**decimals);
+        totalSupply = 12312020 * (10**decimals);
     }
 }

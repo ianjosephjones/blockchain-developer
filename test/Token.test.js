@@ -7,7 +7,7 @@ contract('Token', (accounts) => {
 	const name = 'Copeland Token';
 	const symbol = 'Coe';
 	const decimals = '18';
-	const totalSupply = '1000000000000000000000000';
+	const totalSupply = '12312020000000000000000000';
 	let token;
 	beforeEach(async () => {
 		// Fetch token from blockchain
