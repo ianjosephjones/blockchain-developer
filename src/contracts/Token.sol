@@ -11,6 +11,8 @@ contract Token {
 
     // Track Balances
     mapping(address => uint256) public balanceOf;
+    // Tracking for exhange
+    mapping(address => mapping(address => uint256)) public allowance;
 
     // Events
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -33,4 +35,14 @@ contract Token {
         emit Transfer(msg.sender, _to, _value);
         return true;
     }
+
+    // Approve tokens
+    function approve(address _spender, uint256 _value)
+        public
+        returns (bool success)
+    {
+        allowance[msg.sender][_spender] = _value;
+        return true;
+    }
+    // Transfer from
 }
