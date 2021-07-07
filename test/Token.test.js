@@ -65,7 +65,7 @@ contract('Token', ([deployer, receiver, exchange]) => {
 				// console.log('deployer balance after transfer', balanceOf.toString());
 				// After Transfer
 				balanceOf = await token.balanceOf(receiver);
-				balanceOf.toString().should.equal(tokens(12312020).toString());
+				balanceOf.toString().should.equal(tokens(100).toString());
 				// console.log('receiver balance after transfer', balanceOf.toString());
 			});
 			it('emits a transfer event', async () => {
