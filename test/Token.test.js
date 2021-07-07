@@ -1,4 +1,4 @@
-import { tokens } from './helpers';
+import { tokens, EVM_REVERT } from './helpers';
 
 // Test Smart Contract with Truffle
 const Token = artifacts.require('./Token');
@@ -44,37 +44,60 @@ contract('Token', ([deployer, receiver]) => {
 	describe('sending tokens', () => {
 		let result;
 		let amount;
-		beforeEach(async () => {
-			// Transfer
-			amount = tokens(100);
-			result = await token.transfer(receiver, amount, { from: deployer });
-		});
-		it('transfers tokens balances', async () => {
-			let balanceOf;
-			// Before transfer
-			// balanceOf = await token.balanceOf(deployer);
-			// console.log('deployer balance before transfer', balanceOf.toString());
-			// balanceOf = await token.balanceOf(receiver);
-			// console.log('receiver balance before transfer', balanceOf.toString());
 
-			// Before transfer
-			balanceOf = await token.balanceOf(deployer);
-			balanceOf.toString().should.equal(tokens(12311920).toString());
-			// console.log('deployer balance after transfer', balanceOf.toString());
-			// After Transfer
-			balanceOf = await token.balanceOf(receiver);
-			balanceOf.toString().should.equal(tokens(12312020).toString());
-			// console.log('receiver balance after transfer', balanceOf.toString());
+		describe('success', () => {
+			beforeEach(async () => {
+				// Transfer
+				amount = tokens(100);
+				result = await token.transfer(receiver, amount, { from: deployer });
+			});
+			it('transfers tokens balances', async () => {
+				let balanceOf;
+				// Before transfer
+				// balanceOf = await token.balanceOf(deployer);
+				// console.log('deployer balance before transfer', balanceOf.toString());
+				// balanceOf = await token.balanceOf(receiver);
+				// console.log('receiver balance before transfer', balanceOf.toString());
+
+				// Before transfer
+				balanceOf = await token.balanceOf(deployer);
+				balanceOf.toString().should.equal(tokens(12311920).toString());
+				// console.log('deployer balance after transfer', balanceOf.toString());
+				// After Transfer
+				balanceOf = await token.balanceOf(receiver);
+				balanceOf.toString().should.equal(tokens(12312020).toString());
+				// console.log('receiver balance after transfer', balanceOf.toString());
+			});
+			it('emits a transfer event', async () => {
+				const log = result.logs[0];
+				log.event.should.eq('Transfer');
+				const event = log.args;
+				event.from.toString().should.equal(deployer, 'from is correct');
+				event.to.should.equal(receiver, 'to is correct');
+				event.value
+					.toString()
+					.should.equal(amount.toString(), 'value is correct');
+			});
 		});
-		it('emits a transfer event', async () => {
-			const log = result.logs[0];
-			log.event.should.eq('Transfer');
-			const event = log.args;
-			event.from.toString().should.equal(deployer, 'from is correct');
-			event.to.should.equal(receiver, 'to is correct');
-			event.value
-				.toString()
-				.should.equal(amount.toString(), 'value is correct');
+		describe('failure', () => {
+			it('rejects insufficient balances', async () => {
+				let invalidAmount;
+				invalidAmount = tokens(1000000000); // 1 billion - greater than total supply
+				await token
+					.transfer(receiver, invalidAmount, { from: deployer })
+					.should.be.rejectedWith(EVM_REVERT);
+
+				// Attempt transfer tokens, when you have none
+				invalidAmount = tokens(10); // recipient has no tokens
+				await token
+					.transfer(deployer, invalidAmount, { from: receiver })
+					.should.be.rejectedWith(EVM_REVERT);
+			});
+
+			it('rejects invalid recipients', async () => {
+				await token.transfer(0x0, amount, { from: deployer }).should.be
+					.rejected;
+			});
 		});
 	});
 });

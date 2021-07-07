@@ -27,6 +27,8 @@ contract Token {
         returns (bool success)
     {
         balanceOf[msg.sender] = balanceOf[msg.sender].sub(_value);
+        require(_to != address(0));
+        require(balanceOf[msg.sender] >= _value);
         balanceOf[_to] = balanceOf[msg.sender].add(_value);
         emit Transfer(msg.sender, _to, _value);
         return true;
