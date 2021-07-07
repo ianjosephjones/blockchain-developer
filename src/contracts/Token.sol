@@ -16,6 +16,11 @@ contract Token {
 
     // Events
     event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 
     // Send Tokens
 
@@ -41,7 +46,9 @@ contract Token {
         public
         returns (bool success)
     {
+        require(_spender != address(0));
         allowance[msg.sender][_spender] = _value;
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
     // Transfer from
