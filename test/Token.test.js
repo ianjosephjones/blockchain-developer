@@ -1,13 +1,9 @@
-const { default: Web3 } = require('web3');
+import { tokens } from './helpers';
 
 // Test Smart Contract with Truffle
 const Token = artifacts.require('./Token');
 
 require('chai').use(require('chai-as-promised')).should();
-
-const tokens = (n) => {
-	return new web3.utils.BN(web3.utils.toWei(n.toString(), 'ether'));
-};
 
 contract('Token', ([deployer, receiver]) => {
 	const name = 'Copeland Token';
