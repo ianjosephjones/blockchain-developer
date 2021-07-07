@@ -1,13 +1,19 @@
+const { default: Web3 } = require('web3');
+
 // Test Smart Contract with Truffle
 const Token = artifacts.require('./Token');
 
 require('chai').use(require('chai-as-promised')).should();
 
+const tokens = (n) => {
+	return new web3.utils.BN(web3.utils.toWei(n.toString(), 'ether'));
+};
+
 contract('Token', ([deployer, receiver]) => {
 	const name = 'Copeland Token';
 	const symbol = 'Coe';
 	const decimals = '18';
-	const totalSupply = '12312020000000000000000000';
+	const totalSupply = tokens(12312020).toString();
 	let token;
 	beforeEach(async () => {
 		// Fetch token from blockchain
@@ -30,12 +36,12 @@ contract('Token', ([deployer, receiver]) => {
 		});
 		it('track the total supply', async () => {
 			const result = await token.totalSupply();
-			result.toString().should.equal(totalSupply);
+			result.toString().should.equal(totalSupply.toString());
 		});
 
 		it('assigns the total supply to the deployer', async () => {
 			const result = await token.balanceOf(deployer);
-			result.toString().should.equal(totalSupply);
+			result.toString().should.equal(totalSupply.toString());
 		});
 	});
 
@@ -49,7 +55,7 @@ contract('Token', ([deployer, receiver]) => {
 			console.log('receiver balance before transfer', balanceOf.toString());
 
 			// Transfer
-			await token.transfer(receiver, '1000000000000000000', { from: deployer });
+			await token.transfer(receiver, tokens(100), { from: deployer });
 			// After Transfer
 			balanceOf = await token.balanceOf(deployer);
 			console.log('deployer balance after transfer', balanceOf.toString());
