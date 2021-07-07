@@ -42,6 +42,13 @@ contract('Token', ([deployer, receiver]) => {
 	});
 
 	describe('sending tokens', () => {
+		let result;
+		let amount;		
+		beforeEach(async () => {
+			// Transfer
+			amount = tokens(100);
+			result = await token.transfer(receiver, amount, { from: deployer });
+		});
 		it('transfers tokens balances', async () => {
 			let balanceOf;
 			// Before transfer
@@ -50,12 +57,12 @@ contract('Token', ([deployer, receiver]) => {
 			balanceOf = await token.balanceOf(receiver);
 			console.log('receiver balance before transfer', balanceOf.toString());
 
-			// Transfer
-			await token.transfer(receiver, tokens(100), { from: deployer });
 			// After Transfer
 			balanceOf = await token.balanceOf(deployer);
+			balanceOf.toString().should.equal(tokens(12311920).toString());
 			console.log('deployer balance after transfer', balanceOf.toString());
 			balanceOf = await token.balanceOf(receiver);
+			balanceOf.toString().should.equal(tokens(12312020).toString());
 			console.log('receiver balance after transfer', balanceOf.toString());
 		});
 	});
