@@ -11,9 +11,8 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 // [x] Check balances
 // [x] Make order
 // [x] Cancel order
-// [ ] Fill order
-
-// [ ] Charge fees
+// [x] Fill order
+// [x] Charge fees
 
 contract Exchange {
     using SafeMath for uint256;
@@ -168,25 +167,23 @@ contract Exchange {
     }
 
     function fillOrder(uint256 _id) public {
-        // Require order id is valid
-        require(_id > 0 && _id <= orderCount);
-        require(!orderFilled[_id]);
-        require(!orderCancelled[_id]);
-        // fetch the order
+        require(_id > 0 && _id <= orderCount, "Error, wrong id");
+        require(!orderFilled[_id], "Error, order already filled");
+        require(!orderCancelled[_id], "Error, order already cancelled");
         _Order storage _order = orders[_id];
         _trade(
-            order.id,
+            _order.id,
+            _order.user,
             _order.tokenGet,
             _order.amountGet,
             _order.tokenGive,
             _order.amountGive
         );
-        // mark order as filled
         orderFilled[_order.id] = true;
     }
 
     function _trade(
-        uint256 _id,
+        uint256 _orderid,
         address _user,
         address _tokenGet,
         uint256 _amountGet,
@@ -212,7 +209,7 @@ contract Exchange {
         );
         // emit trade event
         emit Trade(
-            _orderId,
+            _orderid,
             _user,
             _tokenGet,
             _amountGet,
