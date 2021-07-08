@@ -33,7 +33,7 @@ contract Exchange {
 
 // Fallback: revert if Ehter is sent tp this smart contract by mistake 
     function() external {
-        revert()
+        revert();
     }
 
     function depositEther() payable public {
