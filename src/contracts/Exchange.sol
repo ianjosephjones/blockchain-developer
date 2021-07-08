@@ -54,6 +54,16 @@ contract Exchange {
         uint256 amountGive,
         uint256 timestamp
     );
+    event Trade(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        address userFill,
+        uint256 timestamp
+    );
 
     // Structs
     struct _Order {
@@ -152,6 +162,57 @@ contract Exchange {
             _order.amountGet,
             _order.tokenGive,
             _order.amountGive,
+            now
+        );
+    }
+
+    function fillOrder(uint256 _id) public {
+        // fetch the order
+        _Order storage _order = orders[_id];
+        _trade(
+            order.id,
+            _order.tokenGet,
+            _order.amountGet,
+            _order.tokenGive,
+            _order.amountGive
+        );
+        // mark order as filled
+    }
+
+    function _trade(
+        uint256 _id,
+        address _user,
+        address _tokenGet,
+        uint256 _amountGet,
+        address _tokenGive,
+        uint256 _amountGive
+    ) internal {
+        // Fee paid bt the user that fills the order, (msg.sender)
+        // Fee deducted from _amountGet
+        uint256 _feeAmount = _amountGive.mul(feePercent).div(100);
+        // Execute trade
+        // charge fees
+
+        tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(
+            _amountGet.add(_feeAmount)
+        );
+        tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
+        tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount].add(
+            _feeAmount
+        );
+        tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_amountGive);
+        tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender].add(
+            _amountGive
+        );
+        // emit trade event
+        emit Trade(
+            _orderId,
+            _user,
+            _tokenGet,
+            _amountGet,
+            _tokenGive,
+            _amountGive,
+            msg.sender,
             now
         );
     }
