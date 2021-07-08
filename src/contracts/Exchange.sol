@@ -23,7 +23,7 @@ contract Exchange {
     uint256 public feePercent;
     address constant ETHER = address(0); // store ether in tokens mapping with blank address
     mapping(address => mapping(address => uint256)) public tokens;
-    mapping (uint256 => _Order) public orders;
+    mapping(uint256 => _Order) public orders;
     uint256 public orderCount;
 
     // Events
@@ -34,8 +34,8 @@ contract Exchange {
         uint256 amount,
         uint256 balance
     );
-    
-    event Order (
+
+    event Order(
         uint256 id,
         address user,
         address tokenGet,
@@ -44,7 +44,7 @@ contract Exchange {
         uint256 amountGive,
         uint256 timestamp
     );
-    
+
     // Structs
     struct _Order {
         uint256 id;
@@ -55,8 +55,6 @@ contract Exchange {
         uint256 amountGive;
         uint256 timestamp;
     }
-
-
 
     constructor(address _feeAccount, uint256 _feePercent) public {
         feeAccount = _feeAccount;
@@ -102,13 +100,33 @@ contract Exchange {
     {
         return tokens[_token][_user];
     }
-    
-        // Store the order
+
+    // Store the order
     // Add the order to strorage
-    function makeOrder(address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) public {
+    function makeOrder(
+        address _tokenGet,
+        uint256 _amountGet,
+        address _tokenGive,
+        uint256 _amountGive
+    ) public {
         orderCount = orderCount.add(1);
-        orders[orderCount] = _Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
-        emit Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
+        orders[orderCount] = _Order(
+            orderCount,
+            msg.sender,
+            _tokenGet,
+            _amountGet,
+            _tokenGive,
+            _amountGive,
+            now
+        );
+        emit Order(
+            orderCount,
+            msg.sender,
+            _tokenGet,
+            _amountGet,
+            _tokenGive,
+            _amountGive,
+            now
+        );
     }
 }
-
