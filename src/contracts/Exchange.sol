@@ -23,12 +23,7 @@ contract Exchange {
     uint256 public feePercent;
     address constant ETHER = address(0); // store ether in tokens mapping with blank address
     mapping(address => mapping(address => uint256)) public tokens;
-    // Model The order
-
-    mapping(uint256 => _Order) public {
-        mapping (uint256 => _Order) public orders;
-    }
-    // counter cash
+    mapping (uint256 => _Order) public orders;
     uint256 public orderCount;
 
     // Events
@@ -59,7 +54,7 @@ contract Exchange {
         address tokenGive;
         uint256 amountGive;
         uint256 timestamp;
-    };
+    }
 
 
 
@@ -112,7 +107,8 @@ contract Exchange {
     // Add the order to strorage
     function makeOrder(address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) public {
         orderCount = orderCount.add(1);
-        orders[orderCount] = _Order(_id, msg.sender, _tokenGet, _amountGet, _tokenGet, _amountGive, now);
+        orders[orderCount] = _Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
+        emit Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
     }
 }
 
