@@ -12,6 +12,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 // [ ] Make order
 // [ ] Cancel order
 // [ ] Fill order
+
 // [ ] Charge fees
 
 contract Exchange {
@@ -22,6 +23,13 @@ contract Exchange {
     uint256 public feePercent;
     address constant ETHER = address(0); // store ether in tokens mapping with blank address
     mapping(address => mapping(address => uint256)) public tokens;
+    // Model The order
+
+    mapping(uint256 => _Order) public {
+        mapping (uint256 => _Order) public orders;
+    }
+    // counter cash
+    uint256 public orderCount;
 
     // Events
     event Deposit(address token, address user, uint256 amount, uint256 balance);
@@ -31,6 +39,29 @@ contract Exchange {
         uint256 amount,
         uint256 balance
     );
+    
+    event Order (
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        uint256 timestamp
+    );
+    
+    // Structs
+    struct _Order {
+        uint256 id;
+        address user;
+        address tokenGet;
+        uint256 amountGet;
+        address tokenGive;
+        uint256 amountGive;
+        uint256 timestamp;
+    };
+
+
 
     constructor(address _feeAccount, uint256 _feePercent) public {
         feeAccount = _feeAccount;
@@ -76,4 +107,12 @@ contract Exchange {
     {
         return tokens[_token][_user];
     }
+    
+        // Store the order
+    // Add the order to strorage
+    function makeOrder(address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) public {
+        orderCount = orderCount.add(1);
+        orders[orderCount] = _Order(_id, msg.sender, _tokenGet, _amountGet, _tokenGet, _amountGive, now);
+    }
 }
+
