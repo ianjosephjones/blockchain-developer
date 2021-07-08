@@ -33,14 +33,14 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
 		let result;
 		let amount;
 
-		beforeEach(async () => {
-			amount = tokens(10);
-			await token.approve(exchange.address, amount, { from: user1 });
-			result = await exchange.depositToken(token.address, amount, {
-				from: user1,
-			});
-		});
 		describe('success', () => {
+			beforeEach(async () => {
+				amount = tokens(10);
+				await token.approve(exchange.address, amount, { from: user1 });
+				result = await exchange.depositToken(token.address, amount, {
+					from: user1,
+				});
+			});
 			it('tracks the token deposit', async () => {
 				// Check exchange token balance
 				let balance;
@@ -56,12 +56,24 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
 				const event = log.args;
 				event.token.should.equal(token.address, 'token address is correct');
 				event.user.should.equal(user1, 'user address is correct');
-				event.amount.toString().should.equal(tokens.toString(10), 'amount is correct');
-				event.balance.toString().should.equal(tokens.toString(10), 'balance is correct');
+				event.amount
+					.toString()
+					.should.equal(tokens.toString(10), 'amount is correct');
+				event.balance
+					.toString()
+					.should.equal(tokens.toString(10), 'balance is correct');
 			});
 
 			describe('failure', () => {
-				
+				it('rejects ether deposits' async () => {
+					
+				})
+				it('fails when no tokens are approved', async () => {
+					// Dont approve any tokens before depositing
+					await exchange
+						.depositToken(token.address, tokens(10), { from: user1, value: })
+						.should.be.rejectedWith(EVM_REVERT);
+				});
 			});
 		});
 	});
