@@ -21,7 +21,9 @@ module.exports = async function (callback) {
 		await token.transfer(receiver, amount, { from: sender });
 		console.log(`Transferred ${amount} tokens from ${sender} to ${receiver}`);
 
-        
+		// set up exchange users
+		const user1 = accounts[0];
+		const user2 = accounts[1];
 
 		console.log('script running');
 	} catch (error) {
