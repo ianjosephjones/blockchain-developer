@@ -1,4 +1,4 @@
-const { ether } = require('../test/helpers');
+const { ether, ETHER_ADDRESS } = require('../test/helpers');
 
 const Token = artifacts.require('Token');
 const Exchange = artifacts.require('Exchange');
@@ -40,6 +40,27 @@ module.exports = async function (callback) {
 		console.log(`Deposited ${amount} tokens from ${user2}`);
 
 		console.log('script running');
+
+		////////////////////////////////////////////////////////
+		// Seed a cancelled order
+
+		// user 1 makes order to get tokens
+
+		let result;
+		let orderId;
+		result = await exchange.makeOrder(
+			token.address,
+			token(100),
+			ETHER_ADDRESS,
+			ether(0.1),
+			{ from: user1 }
+		);
+		console.log(`Made order from ${user1}`);
+
+		// User 1 cancels order
+		orderId = result.logs[0].args.id;
+		await exchange.cancelOrder(orderId, { from: user1 });
+		console.log(`Cancelled order from ${user1}`);
 	} catch (error) {
 		console.log(error);
 	}
