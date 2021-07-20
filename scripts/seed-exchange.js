@@ -55,12 +55,11 @@ module.exports = async function (callback) {
 		// Seed a cancelled order
 
 		// user 1 makes order to get tokens
-
 		let result;
 		let orderId;
 		result = await exchange.makeOrder(
 			token.address,
-			token(100),
+			tokens(100),
 			ETHER_ADDRESS,
 			ether(0.1),
 			{ from: user1 }
